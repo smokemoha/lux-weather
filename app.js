@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('.weather-info').prepend(loadingIndicator);
     
     // Weather API key
-    const WEATHER_API_KEY = '6f018844487aca8f15b4a35f533859a9';
+    const WEATHER_API_KEY = '';
     
     // Refresh interval (15 minutes)
     const REFRESH_INTERVAL = 15 * 60 * 1000;
