@@ -1,0 +1,936 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    line-height: 1.6;
+    color: #fff;
+    overflow-x: hidden;
+    background-color: #121212;
+}
+
+.weather-container {
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
+}
+
+/* Fix for header and mobile menu positioning */
+header nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+.mobile-menu-btn {
+    display: none;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 1.8rem;
+    cursor: pointer;
+    padding: 5px 10px;
+    position: relative;
+    z-index: 101;
+}
+
+/* Fix for cloud overflow */
+#weather-animation {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    background: linear-gradient(135deg, #4b0082, #9400d3);
+    overflow: hidden; /* Add this to prevent overflow */
+}
+
+/* Ensure clouds stay within container */
+.cloud {
+    max-width: 100%;
+    overflow: hidden;
+}
+
+/* Improve mobile menu display */
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+    }
+    
+    .mobile-menu-btn {
+        display: block;
+    }
+    
+    /* Ensure the mobile nav displays properly */
+    .mobile-nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(18, 18, 18, 0.95);
+        backdrop-filter: blur(10px);
+        z-index: 100;
+        padding: 80px 20px 20px;
+        display: none;
+        overflow-y: auto;
+    }
+    
+    .mobile-nav.active {
+        display: block;
+    }
+}
+
+/* Extra small device fixes */
+@media (max-width: 360px) {
+    header {
+        padding: 15px 10px;
+    }
+    
+    .logo {
+        font-size: 1.2rem;
+    }
+    
+    .mobile-menu-btn {
+        padding: 5px;
+        margin-right: 5px;
+    }
+    
+    /* Ensure weather animations stay within viewport */
+    #weather-animation div {
+        max-width: 100vw;
+    }
+}
+/* Navigation */
+header {
+    padding: 20px 40px;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 100;
+    transition: background-color 0.3s ease;
+    backdrop-filter: blur(10px);
+    background-color: rgba(18, 18, 18, 0.8);
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.logo {
+    font-weight: 600;
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+    color: #f8f8f8;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 40px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #f8f8f8;
+    font-weight: 500;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: color 0.3s ease;
+    position: relative;
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -5px;
+    left: 0;
+    background-color: #e0b25d;
+    transition: width 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #e0b25d;
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+.mobile-menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* Hero Section */
+.hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 180px 20px 100px;
+    max-width: 1000px;
+    margin: 0 auto;
+    position: relative;
+}
+
+h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    background: linear-gradient(to right, #ffffff, #e0b25d);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.tagline {
+    font-size: 1.2rem;
+    font-weight: 300;
+    margin-bottom: 50px;
+    max-width: 600px;
+    color: #cccccc;
+}
+
+/* Weather Info Section */
+.weather-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 30px 0 50px;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.weather-info {
+    text-align: center;
+}
+
+#location {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+#current-weather {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    color: #e0b25d;
+    font-weight: 400;
+}
+
+#temperature {
+    font-size: 3.5rem;
+    font-weight: 300;
+    margin-top: 10px;
+}
+
+.temperature-unit {
+    font-size: 1.8rem;
+    vertical-align: top;
+}
+
+.cta-button {
+    background: linear-gradient(to right, #e0b25d, #d4a146);
+    border: none;
+    color: #121212;
+    padding: 15px 40px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 30px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    box-shadow: 0 4px 15px rgba(224, 178, 93, 0.3);
+}
+
+.cta-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(224, 178, 93, 0.4);
+}
+
+/* Season Selector */
+.season-selector {
+    margin: 0 0 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.season-selector h3 {
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: #cccccc;
+}
+
+.season-buttons {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.season-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.season-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #e0b25d;
+}
+
+.season-btn.active {
+    background: rgba(224, 178, 93, 0.2);
+    border-color: #e0b25d;
+    color: #e0b25d;
+}
+
+/* Background */
+#weather-animation {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    background: linear-gradient(135deg, #1d1d1d, #121212);
+}
+
+.gold-gradient-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: radial-gradient(circle at center, rgba(224, 178, 93, 0.1), transparent 70%);
+}
+
+/* Features Section */
+.features {
+    padding: 100px 20px;
+    background-color: #f8f8f8;
+    color: #121212;
+}
+
+.features-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.features-heading {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.features-heading h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    color: #121212;
+}
+
+.features-heading p {
+    color: #666;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.feature-card {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+.feature-icon {
+    width: 60px;
+    height: 60px;
+    background-color: rgba(224, 178, 93, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.feature-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    color: #121212;
+}
+
+.feature-card p {
+    font-size: 1rem;
+    color: #666;
+    line-height: 1.6;
+}
+
+/* Footer */
+footer {
+    padding: 60px 20px 30px;
+    background-color: #121212;
+    color: #f8f8f8;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 40px;
+}
+
+.footer-logo {
+    font-weight: 600;
+    font-size: 1.8rem;
+    letter-spacing: 2px;
+    margin-bottom: 15px;
+    color: #f8f8f8;
+}
+
+.footer-description {
+    color: #999;
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+}
+
+.footer-links h4 {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    position: relative;
+    display: inline-block;
+}
+
+.footer-links h4::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+    width: 40px;
+    height: 2px;
+    background-color: #e0b25d;
+}
+
+.footer-links ul {
+    list-style: none;
+}
+
+.footer-links li {
+    margin-bottom: 12px;
+}
+
+.footer-links a {
+    color: #999;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    font-size: 0.95rem;
+}
+
+.footer-links a:hover {
+    color: #e0b25d;
+}
+
+.social-links {
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.social-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+}
+
+.social-icon:hover {
+    background-color: rgba(224, 178, 93, 0.2);
+}
+
+.copyright {
+    text-align: center;
+    padding-top: 30px;
+    margin-top: 40px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* Season-specific backgrounds */
+.spring-bg {
+    background: linear-gradient(135deg, #2c3e50, #3498db);
+}
+
+.summer-bg {
+    background: linear-gradient(135deg, #e65c00, #f9d423);
+}
+
+.autumn-bg {
+    background: linear-gradient(135deg, #8e0e00, #1f1c18);
+}
+
+.winter-bg {
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+}
+
+/* Loading indicator */
+.loading-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    gap: 10px;
+}
+
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(224, 178, 93, 0.3);
+    border-radius: 50%;
+    border-top-color: #e0b25d;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .hero {
+        padding: 150px 20px 80px;
+    }
+    
+    h1 {
+        font-size: 3rem;
+    }
+}
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2.5rem;
+    }
+    
+    .tagline {
+        font-size: 1.1rem;
+    }
+    
+    .nav-links {
+        display: none;
+    }
+    
+    .mobile-menu-btn {
+        display: block;
+    }
+    
+    .mobile-nav {
+        position: fixed;
+        top: 80px;
+        left: 0;
+        width: 100%;
+        background-color: rgba(18, 18, 18, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 20px;
+        transform: translateY(-100%);
+        transition: transform 0.3s ease;
+        z-index: 99;
+    }
+    
+    .mobile-nav.active {
+        transform: translateY(0);
+    }
+    
+    .mobile-nav ul {
+        list-style: none;
+    }
+    
+    .mobile-nav li {
+        margin-bottom: 15px;
+    }
+    
+    .mobile-nav a {
+        text-decoration: none;
+        color: #fff;
+        font-size: 1.1rem;
+        display: block;
+        padding: 10px 0;
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        padding: 15px 20px;
+    }
+    
+    h1 {
+        font-size: 2rem;
+    }
+    
+    .hero {
+        padding: 120px 20px 60px;
+    }
+    
+    .weather-display {
+        padding: 20px;
+    }
+    
+    #location {
+        font-size: 1.5rem;
+    }
+    
+    #temperature {
+        font-size: 3rem;
+    }
+    
+    .cta-button {
+        padding: 12px 30px;
+    }
+}
+/* Additional animation styles */
+@keyframes cloud-float {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@keyframes sun-glow {
+    0% {
+        box-shadow: 0 0 50px rgba(255,215,0,0.8), 0 0 100px rgba(255,165,0,0.5);
+    }
+    50% {
+        box-shadow: 0 0 70px rgba(255,215,0,0.9), 0 0 120px rgba(255,165,0,0.6);
+    }
+    100% {
+        box-shadow: 0 0 50px rgba(255,215,0,0.8), 0 0 100px rgba(255,165,0,0.5);
+    }
+}
+
+/* Weather animation container transitions */
+#weather-animation {
+    transition: background 1.5s ease;
+}
+
+/* Seasonal elements */
+.flower, .butterfly, .leaf, .snowflake-light {
+    pointer-events: none;
+}
+
+/* Hover effects for season buttons */
+.season-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.season-btn.active {
+    transform: scale(1.05);
+}
+
+/* Responsive adjustments for weather animations */
+@media (max-width: 768px) {
+    .season-buttons {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    
+    .season-btn {
+        flex: 1;
+        min-width: 80px;
+    }
+}
+
+/* Loading indicator improvements */
+.loading-indicator {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 10px 15px;
+    border-radius: 20px;
+    backdrop-filter: blur(5px);
+}
+
+.loading-indicator p {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+/* Mobile Menu Button */
+.mobile-menu-btn {
+    display: none;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px;
+}
+/* Mobile Navigation - Consolidated Styles */
+.mobile-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(18, 18, 18, 0.95);
+    backdrop-filter: blur(10px);
+    z-index: 100;
+    padding: 80px 20px 20px;
+    display: none;
+    transition: all 0.3s ease;
+}
+
+.mobile-nav.active {
+    display: block;
+}
+
+.mobile-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+}
+
+.mobile-nav li {
+    margin-bottom: 20px;
+}
+
+.mobile-nav a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.2rem;
+    display: block;
+    padding: 15px;
+    transition: color 0.3s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mobile-nav a:hover {
+    color: #e0b25d;
+}
+
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+    }
+    
+    .mobile-menu-btn {
+        display: block;
+        font-size: 1.8rem;
+        padding: 5px 10px;
+    }
+}
+/* Additional Responsive Improvements */
+@media (max-width: 480px) {
+    header {
+        padding: 15px 20px;
+    }
+    
+    h1 {
+        font-size: 1.8rem;
+    }
+    
+    .tagline {
+        font-size: 1rem;
+        margin-bottom: 30px;
+    }
+    
+    .hero {
+        padding: 120px 15px 60px;
+    }
+    
+    .weather-display {
+        padding: 20px 15px;
+        margin: 20px 0 40px;
+    }
+    
+    #location {
+        font-size: 1.4rem;
+    }
+    
+    #temperature {
+        font-size: 2.8rem;
+    }
+    
+    .temperature-unit {
+        font-size: 1.4rem;
+    }
+    
+    .cta-button {
+        padding: 12px 25px;
+        font-size: 0.9rem;
+    }
+    
+    .season-btn {
+        padding: 8px 15px;
+        font-size: 0.8rem;
+    }
+    
+    .features {
+        padding: 60px 15px;
+    }
+    
+    .features-heading h2 {
+        font-size: 2rem;
+    }
+    
+    .feature-card {
+        padding: 25px 20px;
+    }
+}
+
+/* Extra Small Devices */
+@media (max-width: 360px) {
+    h1 {
+        font-size: 1.6rem;
+    }
+    
+    #temperature {
+        font-size: 2.5rem;
+    }
+    
+    .season-buttons {
+        gap: 8px;
+    }
+    
+    .season-btn {
+        padding: 6px 12px;
+        min-width: 70px;
+    }
+    
+    .feature-card h3 {
+        font-size: 1.1rem;
+    }
+}
+/* Tablet Specific Improvements */
+@media (min-width: 481px) and (max-width: 768px) {
+    .hero {
+        padding: 140px 20px 70px;
+    }
+    
+    h1 {
+        font-size: 2.2rem;
+    }
+    
+    .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .footer-content {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+/* Landscape Mode Optimization */
+@media (max-height: 500px) and (orientation: landscape) {
+    .hero {
+        padding: 100px 20px 40px;
+    }
+    
+    h1 {
+        font-size: 2rem;
+        margin-bottom: 10px;
+    }
+    
+    .tagline {
+        margin-bottom: 20px;
+    }
+    
+    .weather-display {
+        margin: 15px 0 30px;
+        padding: 15px;
+    }
+    
+    #location {
+        font-size: 1.4rem;
+        margin-bottom: 5px;
+    }
+    
+    #temperature {
+        margin-top: 5px;
+    }
+    
+    .season-selector {
+        margin-bottom: 20px;
+    }
+    
+    .season-selector h3 {
+        margin-bottom: 10px;
+    }
+}
+/* Font Size Scaling */
+html {
+    font-size: 16px;
+}
+
+@media (max-width: 1200px) {
+    html {
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 992px) {
+    html {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 768px) {
+    html {
+        font-size: 13px;
+    }
+}

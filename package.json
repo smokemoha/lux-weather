@@ -1,0 +1,25 @@
+{
+  "name": "luxweather",
+  "version": "1.0.0",
+  "description": "A premium weather application featuring elegant UI, seasonal animations, and real-time weather data. Designed with luxury aesthetics and responsive design for all devices.",
+  "source": "index.html",
+  "scripts": {
+    "start": "parcel index.html",
+    "build": "parcel build index.html"
+  },
+  "keywords": [
+    "weather",
+    "animation",
+    "luxury",
+    "gold",
+    "gradient",
+    "seasonal",
+    "responsive",
+    "premium"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "parcel": "^2.14.4"
+  }
+}
